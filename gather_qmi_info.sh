@@ -1,14 +1,14 @@
 #! /bin/bash
 
-OFILE=./qmi-info.out.txt
-
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+OFILE=$SCRIPT_DIR/qmi-info.out.txt
 
 download_mtu_autodetect_if_not_exist_and_run () {
-	if [ ! -f ./mtu_autodetect.sh ]; then
-		wget -nv -c https://raw.githubusercontent.com/autopi-io/scripts/master/mtu_autodetect.sh -O ./mtu_autodetect.sh
-		chmod +x ./mtu_autodetect.sh
+	if [ ! -f $SCRIPT_DIR/mtu_autodetect.sh ]; then
+		wget -nv -c https://raw.githubusercontent.com/autopi-io/scripts/master/mtu_autodetect.sh -O $SCRIPT_DIR/mtu_autodetect.sh
+		chmod +x $SCRIPT_DIR/mtu_autodetect.sh
 	fi
-	./mtu_autodetect.sh my.autopi.io
+	$SCRIPT_DIR/mtu_autodetect.sh my.autopi.io
 }
 
 datetime() {
@@ -37,6 +37,7 @@ runmod "qmi-manager service status" "systemctl status qmi-manager"
 runmod "firmware state" 'autopi modem.connection execute "AT#FWSWITCH?"'
 runmod "enabled contexts" 'autopi modem.connection execute "AT+CGDCONT?"'
 runmod "active context status" 'autopi modem.connection execute "AT+CGCONTRDP=1"'
+runmod "signal strength" 'autopi qmi.signal_strength'
 
 runmod "mtu autodetect" "download_mtu_autodetect_if_not_exist_and_run"
 
