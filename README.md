@@ -7,6 +7,6 @@ Automatically detect the largest MTU that propogates through the network to the 
 **Does not actually make the change!**
 
 
-## gather-qmi-info.sh
+## gather_qmi_info.sh
 
 Gather QMI info related info for diagnostics and output to './qmi-info.out.txt'
