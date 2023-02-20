@@ -9,9 +9,10 @@ echo "Output file: $OFILE"
 download_mtu_autodetect_if_not_exist_and_run () {
 	if [ ! -f $SCRIPT_DIR/mtu_autodetect.sh ]; then
 		wget -nv -c https://raw.githubusercontent.com/autopi-io/scripts/master/mtu_autodetect.sh -O $SCRIPT_DIR/mtu_autodetect.sh
-		chmod +x $SCRIPT_DIR/mtu_autodetect.sh
 	fi
-	bash $SCRIPT_DIR/mtu_autodetect.sh my.autopi.io
+
+	chmod +x $SCRIPT_DIR/mtu_autodetect.sh
+	$SCRIPT_DIR/mtu_autodetect.sh my.autopi.io
 }
 
 datetime() {
