@@ -3,6 +3,9 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OFILE=$SCRIPT_DIR/qmi-info.out.txt
 
+echo "Working dir: $SCRIPT_DIR"
+echo "Output file: $OFILE"
+
 download_mtu_autodetect_if_not_exist_and_run () {
 	if [ ! -f $SCRIPT_DIR/mtu_autodetect.sh ]; then
 		wget -nv -c https://raw.githubusercontent.com/autopi-io/scripts/master/mtu_autodetect.sh -O $SCRIPT_DIR/mtu_autodetect.sh
