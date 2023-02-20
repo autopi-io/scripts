@@ -5,7 +5,7 @@ OFILE=./qmi-info.out.txt
 
 download_mtu_autodetect_if_not_exist_and_run () {
 	if [ ! -f ./mtu_autodetect.sh ]; then
-		wget 'https://www.autopi.io/media/rpi/scripts/mtu_autodetect.sh' -O ./mtu_autodetect.sh
+		wget -nv -c https://raw.githubusercontent.com/autopi-io/scripts/master/mtu_autodetect.sh -O ./mtu_autodetect.sh
 		chmod +x ./mtu_autodetect.sh
 	fi
 	./mtu_autodetect.sh my.autopi.io
@@ -52,6 +52,7 @@ runmod "grains" "cat /etc/salt/grains"
 runmod "network interfaces" "ip addr show"
 
 runmod "down->up" "echo ---[ STATUS systemctl stop qmi-manager ]--- && systemctl stop qmi-manager && echo '---[ STATUS qmi-manager down ]---' && qmi-manager down && echo '---[ STATUS qmi-manager up ]---' && qmi-manager up && echo '---[ STATUS qmi-manager down ]---' && qmi-manager down && echo ---[ STATUS systemctl start qmi-manager ]--- && systemctl start qmi-manager"
+runmod "last logs" "cat /var/log/syslog | grep qmi-manager | tail -n 300 -"
 
 echo "---[ END SCRIPT ]---[ $(datetime) ]---" >> $OFILE
 
