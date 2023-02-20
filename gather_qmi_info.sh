@@ -11,7 +11,7 @@ download_mtu_autodetect_if_not_exist_and_run () {
 		wget -nv -c https://raw.githubusercontent.com/autopi-io/scripts/master/mtu_autodetect.sh -O $SCRIPT_DIR/mtu_autodetect.sh
 		chmod +x $SCRIPT_DIR/mtu_autodetect.sh
 	fi
-	$SCRIPT_DIR/mtu_autodetect.sh my.autopi.io
+	bash $SCRIPT_DIR/mtu_autodetect.sh my.autopi.io
 }
 
 datetime() {
