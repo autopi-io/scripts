@@ -81,7 +81,6 @@ upload_dropbox () {
 	if [ $token == "None" ] ; then
 		echo "Token required when uploading to dropbox"
 	else
-		echo $token
 		autopi fileutil.upload $OFILE gzip=False service=dropbox token=$token
 	fi
 }
