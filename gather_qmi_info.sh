@@ -1,7 +1,21 @@
 #! /bin/bash
 
+verbose=False
+upload=None
+token=None
+
+while getopts vu:t: flag
+do
+    case "${flag}" in
+	v) verbose=True;;
+	u) upload=${OPTARG};;
+        t) token=${OPTARG};;
+    esac
+done
+
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-OFILE=$SCRIPT_DIR/qmi-info.out.txt
+OFILE=$SCRIPT_DIR/qmi-info_$(cat /etc/salt/minion_id)_$(date +"%d-%m-%Y_%H-%M-%S_%3N").out.txt
 
 echo "Working dir: $SCRIPT_DIR"
 echo "Output file: $OFILE"
@@ -58,6 +72,24 @@ runmod "network interfaces" "ip addr show"
 
 runmod "down->up" "echo ---[ STATUS systemctl stop qmi-manager ]--- && systemctl stop qmi-manager && echo '---[ STATUS qmi-manager down ]---' && qmi-manager down && echo '---[ STATUS qmi-manager up ]---' && qmi-manager up && echo '---[ STATUS qmi-manager down ]---' && qmi-manager down && echo ---[ STATUS systemctl start qmi-manager ]--- && systemctl start qmi-manager"
 runmod "last logs" "cat /var/log/syslog | grep qmi-manager | tail -n 300 -"
+runmod "dmesg logs" "dmesg | grep qmi-manager | tail -n 50 -"
 
 echo "---[ END SCRIPT ]---[ $(datetime) ]---" >> $OFILE
 
+
+upload_dropbox () {
+	if [ $token == "None" ] ; then
+		echo "Token required when uploading to dropbox"
+	else
+		echo $token
+		autopi fileutil.upload $OFILE gzip=False service=dropbox token=$token
+	fi
+}
+
+
+
+case $upload in
+	dropbox) upload_dropbox;;
+	None) ;;
+	*) echo "Unsupported upload type: $upload";;
+esac
