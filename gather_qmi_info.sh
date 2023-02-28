@@ -3,13 +3,15 @@
 verbose=False
 upload=None
 token=None
+passive=False
 
-while getopts vu:t: flag
+while getopts vpu:t: flag
 do
     case "${flag}" in
-	v) verbose=True;;
-	u) upload=${OPTARG};;
-        t) token=${OPTARG};;
+		v) verbose=True;;
+		u) upload=${OPTARG};;
+		t) token=${OPTARG};;
+		p) passive=True	
     esac
 done
 
@@ -19,6 +21,8 @@ OFILE=$SCRIPT_DIR/qmi-info_$(cat /etc/salt/minion_id)_$(date +"%d-%m-%Y_%H-%M-%S
 
 echo "Working dir: $SCRIPT_DIR"
 echo "Output file: $OFILE"
+echo "Upload: $upload"
+echo "Pasive: $passive"
 
 download_mtu_autodetect_if_not_exist_and_run () {
 	if [ ! -f $SCRIPT_DIR/mtu_autodetect.sh ]; then
@@ -57,7 +61,9 @@ runmod "enabled contexts" 'autopi modem.connection execute "AT+CGDCONT?"'
 runmod "active context status" 'autopi modem.connection execute "AT+CGCONTRDP=1"'
 runmod "signal strength" 'autopi qmi.signal_strength'
 
-runmod "mtu autodetect" "download_mtu_autodetect_if_not_exist_and_run"
+if [ $passive != True ]; then
+	runmod "mtu autodetect" "download_mtu_autodetect_if_not_exist_and_run"
+fi
 
 runmod "SPM sys_pins" "autopi spm.query sys_pins"
 runmod "list devices" "ls /dev/tty* && ls /dev/cdc*"
@@ -70,7 +76,10 @@ runmod "grains" "cat /etc/salt/grains"
 
 runmod "network interfaces" "ip addr show"
 
-runmod "down->up" "echo ---[ STATUS systemctl stop qmi-manager ]--- && systemctl stop qmi-manager && echo '---[ STATUS qmi-manager down ]---' && qmi-manager down && echo '---[ STATUS qmi-manager up ]---' && qmi-manager up && echo '---[ STATUS qmi-manager down ]---' && qmi-manager down && echo ---[ STATUS systemctl start qmi-manager ]--- && systemctl start qmi-manager"
+if [ $passive != True ]; then
+	runmod "down->up" "echo ---[ STATUS systemctl stop qmi-manager ]--- && systemctl stop qmi-manager && echo '---[ STATUS qmi-manager down ]---' && qmi-manager down && echo '---[ STATUS qmi-manager up ]---' && qmi-manager up && echo '---[ STATUS qmi-manager down ]---' && qmi-manager down && echo ---[ STATUS systemctl start qmi-manager ]--- && systemctl start qmi-manager"
+fi
+
 runmod "last logs" "cat /var/log/syslog | grep qmi-manager | tail -n 300 -"
 runmod "dmesg logs" "dmesg | grep qmi-manager | tail -n 50 -"
 
