@@ -5,24 +5,24 @@ upload=None
 token=None
 passive=False
 
-while getopts vpu:t: flag
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+OFILE=$SCRIPT_DIR/qmi-info_$(cat /etc/salt/minion_id)_$(date +"%d-%m-%Y_%H-%M-%S_%3N").out.txt
+
+while getopts vpu:t:o: flag
 do
     case "${flag}" in
 		v) verbose=True;;
 		u) upload=${OPTARG};;
 		t) token=${OPTARG};;
-		p) passive=True	
+		p) passive=True;;
+		o) OFILE=${OPTARG};;
     esac
 done
-
-
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-OFILE=$SCRIPT_DIR/qmi-info_$(cat /etc/salt/minion_id)_$(date +"%d-%m-%Y_%H-%M-%S_%3N").out.txt
 
 echo "Working dir: $SCRIPT_DIR"
 echo "Output file: $OFILE"
 echo "Upload: $upload"
-echo "Pasive: $passive"
+echo "Passive: $passive"
 
 download_mtu_autodetect_if_not_exist_and_run () {
 	if [ ! -f $SCRIPT_DIR/mtu_autodetect.sh ]; then

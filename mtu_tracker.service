@@ -1,0 +1,9 @@
+[Unit]
+Description=MTU Tracker Service
+
+[Service]
+ExecStart=/usr/bin/bash -c "/home/pi/scripts/mtu_tracker.sh -o /var/log/mtu.log -u $(grep '^hub' /boot/host.aliases | awk '{print $2}')"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
