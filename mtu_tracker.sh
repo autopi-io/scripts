@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${bash_source[0]}" )" &> /dev/null && pwd ) 
 URL="my.autopi.io"
