@@ -36,9 +36,19 @@ while true; do
       $QMI_INFO_SCRIPT_PATH -p -o /var/log/qmi-info_$(cat /etc/salt/minion_id)_$(date +"%d-%m-%Y_%H-%M-%S_%3N").out.txt
       MTU=$MTU_START
     else
-      sleep $SLEEP_DURATION
+      # Retry with higher mtu
+      increased_mtu=$((MTU+DECREASE_BY))
+      packet_loss_with_mtu_increase=$(ping -c 3 -s $increased_mtu -M do -I $INTERFACE $URL | awk '/packet loss/{print $6}')
+      if [ -n "$packet_loss_with_mtu_increase" ] && [ "$packet_loss_with_mtu_increase" != "0%" ]; then
+        sleep $SLEEP_DURATION
+      elif [ -n "$packet_loss" ] && [ "$packet_loss" = "0%" ]; then
+        echo "Increasing MTU from last working value didn't cause packet loss. Increased to $increased_mtu ($((increased_mtu+28))). Running qmi_info_gather and trying to find the new working value." >> $OUTPUT_FILE
+        $QMI_INFO_SCRIPT_PATH -p -o /var/log/qmi-info_$(cat /etc/salt/minion_id)_$(date +"%d-%m-%Y_%H-%M-%S_%3N").out.txt
+        MTU=$MTU_START
+        WORKING=false
+      fi
     fi
-  elif [ "$packet_loss" = "0%" ]; then
+  elif [ -n "$packet_loss" ] && [ "$packet_loss" = "0%" ]; then
     echo "Working MTU value: $MTU ($((MTU+28)))" >> $OUTPUT_FILE
     WORKING=true
   else
