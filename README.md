@@ -20,3 +20,6 @@ Service file for setting up the mtu_tracker as a service. Uses the hub specified
 	systemctl daemon-reload
 	systemctl enable mtu_tracker.service
 	systemctl start mtu_tracker.service
+
+## get_center_coordinate.sh
+Will find the geographical center of a geotif image and print it out. The center coordinate is necessary for Map Overlay creation. Also verifies that there is valid geo metadata in the file. 

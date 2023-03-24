@@ -1,20 +1,17 @@
 #!/bin/bash
 
-#################################################################################
-#										#
-# This script will find the geographical center of a geotif image and print it	#
-# out. The center coordinate is necessary for Map Overlay creation. 		#
-#										#
-# If no coordinate is found, or if errors are printed, it is likely that the	#
-# tif metadata is insufficient or is in an unrecognized format. Comapare the	#
-# outputs of gdalinfo $file between the new tif image and a known working one.	#
-#										#
-#################################################################################
+# This script will find the geographical center of a geotif image and print it
+# out. The center coordinate is necessary for Map Overlay creation. 		
+#										
+# If no coordinate is found, or if errors are printed, it is likely that the	
+# tif metadata is insufficient or is in an unrecognized format. Comapare the	
+# outputs of gdalinfo $file between the new tif image and a known working one.	
 
 # Check if gdalinfo and gdaltransform are installed
 if ! command -v gdalinfo &> /dev/null || ! command -v gdaltransform &> /dev/null
 then
-    echo "gdalinfo and gdaltransform not found. Please install the GDAL library: \$ apt install gdal-bin"
+    echo "gdalinfo and gdaltransform not found. Please install the GDAL library: "
+    echo "\$ apt install gdal-bin"
     exit
 fi
 
